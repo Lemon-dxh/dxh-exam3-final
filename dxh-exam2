@@ -1,0 +1,83 @@
+#!/bin/bash
+# ============================================================
+# 脚本名称: dxh-exam2
+# 作者:     邓晓慧 (DengXiaoHui)
+# 学号:     23310137
+# 功能描述: 学号/专业名校验 + 模拟 useradd 创建用户
+# ============================================================
+
+clear
+
+echo "========================================"
+echo "  Linux 期末考查 - dxh-exam2"
+echo "  作者: 邓晓慧 (DengXiaoHui)  学号: 23310137"
+echo "========================================"
+echo ""
+
+# --- 学号校验 ---
+STUDENT_ID=""
+while true; do
+    read -r -p "请输入学号（输入 q 退出）: " INPUT_ID
+
+    if [ "$INPUT_ID" = "q" ] || [ "$INPUT_ID" = "Q" ]; then
+        echo "用户选择退出，脚本结束。"
+        exit 0
+    fi
+
+    if [[ "$INPUT_ID" =~ ^[A-Z]?[0-9]{8}$ ]]; then
+        STUDENT_ID="$INPUT_ID"
+        echo "学号 $STUDENT_ID 格式校验通过。"
+        break
+    else
+        echo "错误：学号格式不正确！"
+        echo "  有效格式示例: Z23310401, 23310211"
+    fi
+done
+
+echo ""
+
+# --- 专业名校验 ---
+MAJOR=""
+while true; do
+    read -r -p "请输入专业名（英文，输入 q 退出）: " INPUT_MAJOR
+
+    if [ "$INPUT_MAJOR" = "q" ] || [ "$INPUT_MAJOR" = "Q" ]; then
+        echo "用户选择退出，脚本结束。"
+        exit 0
+    fi
+
+    if [[ "$INPUT_MAJOR" =~ ^[a-zA-Z]+$ ]]; then
+        MAJOR="$INPUT_MAJOR"
+        echo "专业名 $MAJOR 格式校验通过。"
+        break
+    else
+        echo "错误：专业名只能包含英文字母！"
+    fi
+done
+
+echo ""
+
+# --- 模拟 useradd ---
+echo "========================================"
+echo "  模拟用户创建"
+echo "========================================"
+echo ""
+
+if id "$STUDENT_ID" &>/dev/null; then
+    echo "用户 $STUDENT_ID 已存在，无需创建。"
+else
+    echo "用户 $STUDENT_ID 不存在，将执行以下命令创建："
+    echo ""
+    echo "  useradd -g $MAJOR $STUDENT_ID"
+    echo ""
+    echo "（注：此处仅展示命令，未实际执行 useradd。）"
+fi
+
+echo ""
+echo "========================================"
+echo "  当前时间 T3"
+echo "========================================"
+date "+%Y-%m-%d %H:%M:%S"
+
+read -r -n 1
+exit 0
