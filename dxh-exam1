@@ -1,54 +1,55 @@
 #!/bin/bash
 # ============================================================
-# 脚本名称: dxh-exam1
-# 作者:     邓晓慧 (DengXiaoHui)
-# 学号:     23310137
-# 功能描述: 接收一个正整数参数 n，在 dxhgit 目录中创建 n 个
-#           lemon-x.MP3 文件，自带 trap 清理回收机制
+# Script Name: dxh-exam1
+# Author:     DengXiaoHui (DengXiaoHui)
+# Student ID: 23310137
+# Description: Accepts a positive integer n, creates n
+#              lemon-x.MP3 files in dxhgit directory,
+#              with trap cleanup mechanism
 # ============================================================
 
-# --- 全局变量 ---
+# --- Global Variables ---
 FRUIT="lemon"
 TARGET_DIR="$HOME/dxhgit"
 CREATED_FILES=""
 
-# --- trap 清理回收函数 ---
+# --- Trap Cleanup Function ---
 cleanup() {
     if [ -n "$CREATED_FILES" ]; then
-        echo "[cleanup] 正在清理本次创建的文件..."
+        echo "[cleanup] Cleaning up files created by this run..."
         for f in $CREATED_FILES; do
             if [ -f "$TARGET_DIR/$f" ]; then
                 rm -f "$TARGET_DIR/$f"
-                echo "[cleanup] 已删除: $TARGET_DIR/$f"
+                echo "[cleanup] Deleted: $TARGET_DIR/$f"
             fi
         done
     fi
-    echo "[cleanup] 清理完成。"
+    echo "[cleanup] Cleanup completed."
 }
 trap cleanup EXIT INT TERM
 
-# --- 参数校验 ---
+# --- Parameter Validation ---
 if [ $# -ne 1 ]; then
-    echo "错误：脚本需要恰好一个正整数参数。"
-    echo "用法：$0 <正整数>"
+    echo "Error: Script requires exactly one positive integer parameter."
+    echo "Usage: $0 <positive_integer>"
     read -r -n 1
     exit 1
 fi
 
 if ! [[ "$1" =~ ^[1-9][0-9]*$ ]]; then
-    echo "错误：参数 '$1' 不是正整数。"
-    echo "用法：$0 <正整数>"
+    echo "Error: '$1' is not a positive integer."
+    echo "Usage: $0 <positive_integer>"
     read -r -n 1
     exit 1
 fi
 
 N=$1
 
-# --- 主逻辑 ---
+# --- Main Logic ---
 echo "DengXiaoHui will create $N files"
 
 if [ ! -d "$TARGET_DIR" ]; then
-    echo "错误：目标目录 $TARGET_DIR 不存在。"
+    echo "Error: Target directory $TARGET_DIR does not exist."
     exit 1
 fi
 
@@ -57,25 +58,25 @@ cd "$TARGET_DIR" || exit 1
 for (( i=1; i<=N; i++ )); do
     FILENAME="${FRUIT}-${i}.MP3"
     if [ -f "$FILENAME" ]; then
-        echo "[跳过] $FILENAME 已存在，不再重复创建。"
+        echo "[SKIP] $FILENAME already exists."
     else
         touch "$FILENAME"
-        echo "[创建] $FILENAME"
+        echo "[CREATE] $FILENAME"
         CREATED_FILES="$CREATED_FILES $FILENAME"
     fi
 done
 
 echo ""
 echo "DengXiaoHui fin"
-echo "--- 本次新创建的文件列表 ---"
+echo "--- Newly created files ---"
 if [ -z "$CREATED_FILES" ]; then
-    echo "（无新文件创建，所有文件均已存在）"
+    echo "(No new files created, all already exist)"
 else
     for f in $CREATED_FILES; do
         echo "  $TARGET_DIR/$f"
     done
 fi
-echo "--- 当前时间 T2 ---"
+echo "--- Current Time T2 ---"
 date "+%Y-%m-%d %H:%M:%S"
 
 read -r -n 1
